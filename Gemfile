@@ -4,3 +4,7 @@ source "https://rubygems.org"
 gemspec
 
 gem "paho-mqtt", "~> 1.0"
+
+gem "guard-rspec", "~> 4.7"
+
+gem "awesome_print", "~> 1.8"

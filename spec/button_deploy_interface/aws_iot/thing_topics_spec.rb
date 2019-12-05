@@ -1,5 +1,5 @@
 RSpec.describe ButtonDeployInterface::AwsIot::ThingTopics do
-  subject { described_class.new(thing_name: thing_name) }
+  subject { described_class.new(thing_name) }
 
   let(:thing_name) { "ThingName" }
 

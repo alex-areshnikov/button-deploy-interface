@@ -1,5 +1,5 @@
 RSpec.describe ButtonDeployInterface::AwsIot::Connector do
-  subject { described_class.new(certificate_path: certificate_path, private_key_path: private_key_path) }
+  subject { described_class.new(certificate_path, private_key_path) }
 
   let(:certificate_path) { "certificate_path" }
   let(:private_key_path) { "private_key_path" }
@@ -15,13 +15,17 @@ RSpec.describe ButtonDeployInterface::AwsIot::Connector do
       expect(mqtt_client).to receive(:config_ssl_context).with(certificate_path, private_key_path)
       expect(mqtt_client).to receive(:on_connack=)
       expect(mqtt_client).to receive(:on_suback)
-      expect(mqtt_client).to receive(:on_message)
       expect(mqtt_client).to receive(:connect)
     end
 
     it "connects" do
       subject.connect
     end
+  end
+
+  it "registres on_message callback" do
+    expect(mqtt_client).to receive(:on_message)
+    subject.register_on_message_callback(proc {})
   end
 
   it "subscribes" do

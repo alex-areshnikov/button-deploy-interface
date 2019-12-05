@@ -1,7 +1,7 @@
 module ButtonDeployInterface
   module AwsIot
     class ThingTopics
-      def initialize(thing_name:)
+      def initialize(thing_name)
         @thing_name = thing_name
       end
 

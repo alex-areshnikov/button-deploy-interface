@@ -1,7 +1,7 @@
 module ButtonDeployInterface
   module AwsIot
     class Connector
-      def initialize(certificate_path:, private_key_path:)
+      def initialize(certificate_path, private_key_path)
         @certificate_path = certificate_path
         @private_key_path = private_key_path
         @mqtt_client = PahoMqtt::Client.new
@@ -16,12 +16,12 @@ module ButtonDeployInterface
         mqtt_client.on_connack = proc { @is_connected = true }
         mqtt_client.on_suback { puts "Subscribed" }
 
-        mqtt_client.on_message do |message|
-          puts "Message recieved on topic: #{message.topic}\n>>> #{message.payload}"
-        end
-
         mqtt_client.connect(ButtonDeployInterface::AwsIot::Constants::AWS_IOT_ENDPOINT_URL,
                             ButtonDeployInterface::AwsIot::Constants::AWS_IOT_ENDPOINT_PORT)
+      end
+
+      def register_on_message_callback(callback)
+        mqtt_client.on_message { |message| callback.call(message.topic, message.payload) }
       end
 
       def connected?

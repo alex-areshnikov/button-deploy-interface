@@ -1,5 +1,5 @@
 RSpec.describe ButtonDeployInterface::Client do
-  subject { described_class.new(certificate_path: certificate_path, private_key_path: private_key_path) }
+  subject { described_class.new(certificate_path, private_key_path) }
 
   let(:certificate_path) { "certificate_path" }
   let(:private_key_path) { "private_key_path" }
@@ -16,6 +16,7 @@ RSpec.describe ButtonDeployInterface::Client do
     expect(connector).to receive(:connect)
     expect(connector).to receive(:connected?).and_return(true)
     expect(connector).to receive(:subscribe)
+    expect(connector).to receive(:register_on_message_callback)
     expect(thing_topics).to receive(:update_documents)
     subject.setup
   end
