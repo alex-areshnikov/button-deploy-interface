@@ -6,7 +6,13 @@ module ButtonDeployInterface
       @deploy_button_topics = ButtonDeployInterface::AwsIot::ThingTopics.new(
         ButtonDeployInterface::AwsIot::Constants::DEPLOY_BUTTON_THING_NAME)
 
-      @interface_actor = ButtonDeployInterface::Actor.new
+      @interface_reactors = []
+    end
+
+    def register_device_action_reactor(reactor)
+      raise ButtonDeployInterface::InvalidReactor.new() unless reactor.respond_to?(:call)
+
+      @interface_reactors << reactor
     end
 
     def setup
@@ -19,8 +25,8 @@ module ButtonDeployInterface
     private
 
     def register_incoming_messages_callback
-      callback = proc do |topic, payload|        
-        ButtonDeployInterface::AwsIot::IncomingMessage::Parser.new(topic, payload, interface_actor).process
+      callback = proc do |topic, payload|
+        ButtonDeployInterface::AwsIot::IncomingMessage::Parser.new(topic, payload, interface_reactors).process
       end
 
       connector.register_on_message_callback(callback)
@@ -33,6 +39,6 @@ module ButtonDeployInterface
       end
     end
 
-    attr_reader :connector, :deploy_button_topics, :interface_actor
+    attr_reader :connector, :deploy_button_topics, :interface_reactors
   end
 end

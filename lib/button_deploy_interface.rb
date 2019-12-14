@@ -6,5 +6,13 @@ require "timeout"
 require "json"
 
 module ButtonDeployInterface
+  class ClientAlreadyInitialized < StandardError; end
+  class UnexpectedButtonAction < StandardError; end
   class UnrecognizedMessage < StandardError; end
+
+  class InvalidReactor < StandardError
+    def initialize(msg="Reactor must be a Proc or respond to call")
+      super
+    end
+  end
 end

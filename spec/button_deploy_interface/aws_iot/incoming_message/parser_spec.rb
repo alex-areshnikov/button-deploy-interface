@@ -1,9 +1,8 @@
 RSpec.describe ButtonDeployInterface::AwsIot::IncomingMessage::Parser do
-  subject { described_class.new(topic, message, interface_actor) }
+  subject { described_class.new(topic, message, []) }
 
   let(:message) { "Message" }
 
-  let(:interface_actor) { instance_double ButtonDeployInterface::Actor }
   let(:unrecognized_topic_processor) { instance_double(ButtonDeployInterface::AwsIot::IncomingMessage::Processors::Base) }
   let(:update_documents_topic_processor) { instance_double(ButtonDeployInterface::AwsIot::IncomingMessage::Processors::UpdateDocuments) }
 

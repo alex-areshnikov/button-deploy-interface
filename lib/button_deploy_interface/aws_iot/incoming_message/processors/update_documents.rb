@@ -4,7 +4,7 @@ module ButtonDeployInterface
       module Processors
         class UpdateDocuments < ButtonDeployInterface::AwsIot::IncomingMessage::Processors::Base
           def process
-            ButtonDeployInterface::EventReactors::Button.new(previous_state, current_state, interface_actor).react
+            ButtonDeployInterface::EventReactors::Button.new(previous_state, current_state, interface_reactors).react
             # TODO: ButtonDeployInterface::EventReactors::Fingerprint
           end
 

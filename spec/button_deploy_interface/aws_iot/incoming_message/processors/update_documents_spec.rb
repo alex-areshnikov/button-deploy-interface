@@ -1,7 +1,6 @@
 RSpec.describe ButtonDeployInterface::AwsIot::IncomingMessage::Processors::UpdateDocuments do
-  subject { described_class.new(raw_payload, interface_actor) }
+  subject { described_class.new(raw_payload, []) }
 
-  let(:interface_actor) { instance_double ButtonDeployInterface::Actor }
   let(:event_reactor_button) { instance_double ButtonDeployInterface::EventReactors::Button }
 
   let(:raw_payload) do
@@ -24,7 +23,7 @@ RSpec.describe ButtonDeployInterface::AwsIot::IncomingMessage::Processors::Updat
 
   it "processes message" do
     expect(ButtonDeployInterface::EventReactors::Button).to receive(:new)
-      .with(expected_previous_state, expected_current_state, interface_actor)
+      .with(expected_previous_state, expected_current_state, [])
       .and_return(event_reactor_button)
 
     expect(event_reactor_button).to receive(:react)

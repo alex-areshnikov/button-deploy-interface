@@ -2,16 +2,16 @@ module ButtonDeployInterface
   module AwsIot
     module IncomingMessage
       class Parser
-        def initialize(topic, payload, interface_actor)
+        def initialize(topic, payload, interface_reactors)
           @topic = topic
           @payload = payload
-          @interface_actor = interface_actor
+          @interface_reactors = interface_reactors
           @deploy_button_topics = ButtonDeployInterface::AwsIot::ThingTopics.new(
             ButtonDeployInterface::AwsIot::Constants::DEPLOY_BUTTON_THING_NAME)
         end
 
         def process
-          topic_processor.new(payload, interface_actor).process
+          topic_processor.new(payload, interface_reactors).process
         end
 
         private
@@ -25,7 +25,7 @@ module ButtonDeployInterface
           }.fetch(topic, ButtonDeployInterface::AwsIot::IncomingMessage::Processors::Base)
         end
 
-        attr_reader :topic, :payload, :interface_actor, :deploy_button_topics
+        attr_reader :topic, :payload, :interface_reactors, :deploy_button_topics
       end
     end
   end

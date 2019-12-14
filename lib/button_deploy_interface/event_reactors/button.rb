@@ -1,20 +1,26 @@
 module ButtonDeployInterface
   module EventReactors
     class Button
-      def initialize(state_previous, state_current, interface_actor)
+      def initialize(state_previous, state_current, interface_reactors)
         @state_previous = state_previous
         @state_current = state_current
-        @interface_actor = interface_actor
+        @interface_reactors = interface_reactors
       end
 
       def react
-        interface_actor.button_pressed(current_name) if was_not_pressed?
-        interface_actor.button_released(previous_name) if no_longer_pressed?
+        interface_reactors.each do |interface_reactor|
+          data = { name: current_name, state: :pressed } if was_not_pressed?
+          data = { name: previous_name, state: :released } if no_longer_pressed?
+
+          raise ButtonDeployInterface::UnexpectedButtonAction unless defined? data
+
+          interface_reactor.call(:button, data)
+        end
       end
 
       private
 
-      attr_reader :state_previous, :state_current, :interface_actor
+      attr_reader :state_previous, :state_current, :interface_reactors
 
       def was_not_pressed?
         return true if state_previous.nil?
