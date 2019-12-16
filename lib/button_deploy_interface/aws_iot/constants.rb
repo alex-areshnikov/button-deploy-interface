@@ -36,6 +36,14 @@ module ButtonDeployInterface
         SELECT_BUTTON_PRESSED => BUTTON_SELECT,
         DEPLOY_BUTTON_PRESSED => BUTTON_DEPLOY
       }
+
+      STEPS = [
+        STEP_READY = 0,
+        STEP_FINGERPRINT_SCAN = 1,
+        STEP_ACCESS_GRANTED = 2,
+        STEP_DEPLOYING = 3,
+        STEP_ERROR = 15
+      ]
     end
   end
 end

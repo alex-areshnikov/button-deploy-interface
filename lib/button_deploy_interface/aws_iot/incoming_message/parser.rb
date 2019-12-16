@@ -6,8 +6,7 @@ module ButtonDeployInterface
           @topic = topic
           @payload = payload
           @interface_reactors = interface_reactors
-          @deploy_button_topics = ButtonDeployInterface::AwsIot::ThingTopics.new(
-            ButtonDeployInterface::AwsIot::Constants::DEPLOY_BUTTON_THING_NAME)
+          @deploy_button_topics = ButtonDeployInterface::AwsIot::ThingTopics.new
         end
 
         def process

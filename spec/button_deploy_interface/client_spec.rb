@@ -6,10 +6,12 @@ RSpec.describe ButtonDeployInterface::Client do
 
   let(:connector) { instance_double(ButtonDeployInterface::AwsIot::Connector)}
   let(:thing_topics) { instance_double(ButtonDeployInterface::AwsIot::ThingTopics)}
+  let(:steps_manager) { instance_double(ButtonDeployInterface::AwsIot::Steps::Manager)}
 
   before do
     expect(ButtonDeployInterface::AwsIot::Connector).to receive(:new).and_return(connector)
     expect(ButtonDeployInterface::AwsIot::ThingTopics).to receive(:new).and_return(thing_topics)
+    expect(ButtonDeployInterface::AwsIot::Steps::Manager).to receive(:new).and_return(steps_manager)
   end
 
   it "does setup" do
@@ -21,4 +23,9 @@ RSpec.describe ButtonDeployInterface::Client do
     subject.setup
   end
 
+  it "calls set step" do
+    expect(steps_manager).to receive(:set_step).with(2)
+
+    subject.set_step(2)
+  end
 end

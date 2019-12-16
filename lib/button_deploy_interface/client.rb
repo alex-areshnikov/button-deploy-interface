@@ -1,18 +1,17 @@
+require 'forwardable'
+
 module ButtonDeployInterface
   class Client
+    extend Forwardable
+
+    def_delegators :steps_manager, :set_step
+
     def initialize(certificate_path, private_key_path)
       @connector = ButtonDeployInterface::AwsIot::Connector.new(certificate_path, private_key_path)
-
-      @deploy_button_topics = ButtonDeployInterface::AwsIot::ThingTopics.new(
-        ButtonDeployInterface::AwsIot::Constants::DEPLOY_BUTTON_THING_NAME)
+      @deploy_button_topics = ButtonDeployInterface::AwsIot::ThingTopics.new
+      @steps_manager = ButtonDeployInterface::AwsIot::Steps::Manager.new(connector)
 
       @interface_reactors = []
-    end
-
-    def register_device_action_reactor(reactor)
-      raise ButtonDeployInterface::InvalidReactor.new() unless reactor.respond_to?(:call)
-
-      @interface_reactors << reactor
     end
 
     def setup
@@ -20,6 +19,12 @@ module ButtonDeployInterface
       connector.connect
       wait_for_connected
       connector.subscribe(deploy_button_topics.update_documents)
+    end
+
+    def register_device_action_reactor(reactor)
+      raise ButtonDeployInterface::InvalidReactor unless reactor.respond_to?(:call)
+
+      @interface_reactors << reactor
     end
 
     private
@@ -39,6 +44,6 @@ module ButtonDeployInterface
       end
     end
 
-    attr_reader :connector, :deploy_button_topics, :interface_reactors
+    attr_reader :connector, :deploy_button_topics, :interface_reactors, :steps_manager
   end
 end

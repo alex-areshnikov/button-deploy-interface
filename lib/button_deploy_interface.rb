@@ -6,7 +6,7 @@ require "timeout"
 require "json"
 
 module ButtonDeployInterface
-  class ClientAlreadyInitialized < StandardError; end
+  class ClientNotConnected < StandardError; end
   class UnexpectedButtonAction < StandardError; end
   class UnrecognizedMessage < StandardError; end
 
