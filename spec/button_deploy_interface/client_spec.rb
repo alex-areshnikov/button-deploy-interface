@@ -24,8 +24,8 @@ RSpec.describe ButtonDeployInterface::Client do
   end
 
   it "calls set step" do
-    expect(steps_manager).to receive(:set_step).with(2)
+    expect(steps_manager).to receive(:step).with(2)
 
-    subject.set_step(2)
+    subject.step(2)
   end
 end

@@ -8,7 +8,7 @@ module ButtonDeployInterface
           @deploy_button_topics = ButtonDeployInterface::AwsIot::ThingTopics.new
         end
 
-        def set_step(step)
+        def step(step)
           raise ClientNotConnected unless connector.connected?
 
           payload = ButtonDeployInterface::AwsIot::Steps::Composer.new(step).call
