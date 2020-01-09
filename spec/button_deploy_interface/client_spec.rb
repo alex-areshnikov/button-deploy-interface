@@ -4,12 +4,14 @@ RSpec.describe ButtonDeployInterface::Client do
   let(:certificate_path) { "certificate_path" }
   let(:private_key_path) { "private_key_path" }
 
-  let(:connector) { instance_double(ButtonDeployInterface::AwsIot::Connector)}
-  let(:thing_topics) { instance_double(ButtonDeployInterface::AwsIot::ThingTopics)}
-  let(:steps_manager) { instance_double(ButtonDeployInterface::AwsIot::Steps::Manager)}
+  let(:connector) { instance_double(ButtonDeployInterface::AwsIot::Connector) }
+  let(:update_publisher) { instance_double(ButtonDeployInterface::AwsIot::UpdatePublisher) }
+  let(:thing_topics) { instance_double(ButtonDeployInterface::AwsIot::ThingTopics) }
+  let(:steps_manager) { instance_double(ButtonDeployInterface::AwsIot::Steps::Manager) }
 
   before do
     expect(ButtonDeployInterface::AwsIot::Connector).to receive(:new).and_return(connector)
+    expect(ButtonDeployInterface::AwsIot::UpdatePublisher).to receive(:new).and_return(update_publisher)
     expect(ButtonDeployInterface::AwsIot::ThingTopics).to receive(:new).and_return(thing_topics)
     expect(ButtonDeployInterface::AwsIot::Steps::Manager).to receive(:new).and_return(steps_manager)
   end
@@ -27,5 +29,17 @@ RSpec.describe ButtonDeployInterface::Client do
     expect(steps_manager).to receive(:step).with(2)
 
     subject.step(2)
+  end
+
+  context "fingerprint" do
+    let(:payload_builder) { instance_double(ButtonDeployInterface::AwsIot::Payloads::FingerprintEnroll) }
+
+    it "calls fingerprint enroll" do
+      expect(ButtonDeployInterface::AwsIot::Payloads::FingerprintEnroll).to receive(:new).with(6).and_return(payload_builder)
+      expect(payload_builder).to receive(:call).and_return("payload")
+      expect(update_publisher).to receive(:call).with("payload")
+
+      subject.fingerprint_enroll(6)
+    end
   end
 end

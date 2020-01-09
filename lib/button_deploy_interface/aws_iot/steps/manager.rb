@@ -2,24 +2,21 @@ module ButtonDeployInterface
   module AwsIot
     module Steps
       class Manager
-        def initialize(connector)
-          @connector = connector
+        def initialize(publisher)
+          @publisher = publisher
           @current_step = ButtonDeployInterface::AwsIot::Constants::STEP_READY
-          @deploy_button_topics = ButtonDeployInterface::AwsIot::ThingTopics.new
         end
 
-        def step(step)
-          raise ClientNotConnected unless connector.connected?
-
-          payload = ButtonDeployInterface::AwsIot::Steps::Composer.new(step).call
-          connector.publish(@deploy_button_topics.update, payload)
+        def step(step, error: false)
+          payload = ButtonDeployInterface::AwsIot::Payloads::Step.new(step, error).call
+          publisher.call(payload)
 
           @current_step = step
         end
 
         private
 
-        attr_reader :connector
+        attr_reader :publisher
       end
     end
   end

@@ -4,7 +4,7 @@ module ButtonDeployInterface
       def initialize(certificate_path, private_key_path)
         @certificate_path = certificate_path
         @private_key_path = private_key_path
-        @mqtt_client = PahoMqtt::Client.new
+        @mqtt_client = PahoMqtt::Client.new(persistent: true)
         @is_connected = false
       end
 

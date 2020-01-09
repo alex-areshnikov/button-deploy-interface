@@ -9,7 +9,8 @@ module ButtonDeployInterface
     def initialize(certificate_path, private_key_path)
       @connector = ButtonDeployInterface::AwsIot::Connector.new(certificate_path, private_key_path)
       @deploy_button_topics = ButtonDeployInterface::AwsIot::ThingTopics.new
-      @steps_manager = ButtonDeployInterface::AwsIot::Steps::Manager.new(connector)
+      @update_publisher = ButtonDeployInterface::AwsIot::UpdatePublisher.new(connector)
+      @steps_manager = ButtonDeployInterface::AwsIot::Steps::Manager.new(update_publisher)
 
       @interface_reactors = []
     end
@@ -25,6 +26,11 @@ module ButtonDeployInterface
       raise ButtonDeployInterface::InvalidReactor unless reactor.respond_to?(:call)
 
       @interface_reactors << reactor
+    end
+
+    def fingerprint_enroll(enroll_id)
+      payload = ButtonDeployInterface::AwsIot::Payloads::FingerprintEnroll.new(enroll_id).call
+      update_publisher.call(payload)
     end
 
     private
@@ -44,6 +50,6 @@ module ButtonDeployInterface
       end
     end
 
-    attr_reader :connector, :deploy_button_topics, :interface_reactors, :steps_manager
+    attr_reader :connector, :update_publisher, :deploy_button_topics, :interface_reactors, :steps_manager
   end
 end

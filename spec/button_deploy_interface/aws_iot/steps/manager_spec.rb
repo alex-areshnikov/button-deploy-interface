@@ -1,13 +1,13 @@
 RSpec.describe ButtonDeployInterface::AwsIot::Steps::Manager do
-  subject { described_class.new(connector) }
+  subject { described_class.new(publisher) }
 
-  let(:connector) { instance_double(ButtonDeployInterface::AwsIot::Connector, connected?: true) }
-  let(:composer) { instance_double(ButtonDeployInterface::AwsIot::Steps::Composer) }
+  let(:publisher) { instance_double(ButtonDeployInterface::AwsIot::UpdatePublisher) }
+  let(:payload_builder) { instance_double(ButtonDeployInterface::AwsIot::Payloads::Step) }
 
   it "sets step" do
-    expect(ButtonDeployInterface::AwsIot::Steps::Composer).to receive(:new).with(2).and_return(composer)
-    expect(composer).to receive(:call).and_return("payload")
-    expect(connector).to receive(:publish).with("$aws/things/DeployButton/shadow/update", "payload")
+    expect(ButtonDeployInterface::AwsIot::Payloads::Step).to receive(:new).with(2, false).and_return(payload_builder)
+    expect(payload_builder).to receive(:call).and_return("payload")
+    expect(publisher).to receive(:call).with("payload")
     subject.step(2)
   end
 end
