@@ -6,6 +6,7 @@ module ButtonDeployInterface
       DEPLOY_BUTTON_THING_NAME = "DeployButton"
       TIMEOUT_SEC = 5
 
+      STEP_KEY = "step"
       BUTTONS_STATE_KEY = "button"
 
       BUTTON_NAMES = [

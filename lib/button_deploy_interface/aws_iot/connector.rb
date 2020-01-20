@@ -1,6 +1,12 @@
+require 'forwardable'
+
 module ButtonDeployInterface
   module AwsIot
     class Connector
+      extend Forwardable
+
+      def_delegators :mqtt_client, :connection_state
+
       def initialize(certificate_path, private_key_path)
         @certificate_path = certificate_path
         @private_key_path = private_key_path

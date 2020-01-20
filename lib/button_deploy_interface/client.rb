@@ -5,6 +5,7 @@ module ButtonDeployInterface
     extend Forwardable
 
     def_delegators :steps_manager, :step
+    def_delegators :connector, :connection_state
 
     def initialize(certificate_path, private_key_path)
       @connector = ButtonDeployInterface::AwsIot::Connector.new(certificate_path, private_key_path)

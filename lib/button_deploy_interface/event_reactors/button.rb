@@ -9,10 +9,11 @@ module ButtonDeployInterface
 
       def react
         interface_reactors.each do |interface_reactor|
-          data = { name: current_name, state: :pressed } if was_not_pressed?
-          data = { name: previous_name, state: :released } if no_longer_pressed?
+          data = { name: current_name, state: :pressed, step: step } if was_not_pressed?
+          data = { name: previous_name, state: :released, step: step } if no_longer_pressed?
 
           raise ButtonDeployInterface::UnexpectedButtonAction unless defined? data
+          return if data[:name].nil?
 
           interface_reactor.call(:button, data)
         end
@@ -30,6 +31,10 @@ module ButtonDeployInterface
 
       def no_longer_pressed?
         state_current[key] == no_button_event
+      end
+
+      def step
+        state_current[ButtonDeployInterface::AwsIot::Constants::STEP_KEY]
       end
 
       def current_name

@@ -8,7 +8,7 @@ module ButtonDeployInterface
         end
 
         def step(step, error: false)
-          payload = ButtonDeployInterface::AwsIot::Payloads::Step.new(step, error).call
+          payload = ButtonDeployInterface::AwsIot::Payloads::Step.new(step, error: error).call
           publisher.call(payload)
 
           @current_step = step
