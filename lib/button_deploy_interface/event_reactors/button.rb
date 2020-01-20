@@ -8,12 +8,13 @@ module ButtonDeployInterface
       end
 
       def react
+        return if current_name.nil? && previous_name.nil?
+
         interface_reactors.each do |interface_reactor|
-          data = { name: current_name, state: :pressed, step: step } if was_not_pressed?
-          data = { name: previous_name, state: :released, step: step } if no_longer_pressed?
+          data = data_base.merge(name: current_name, state: :pressed) if was_not_pressed?
+          data = data_base.merge(name: previous_name, state: :released) if no_longer_pressed?
 
           raise ButtonDeployInterface::UnexpectedButtonAction unless defined? data
-          return if data[:name].nil?
 
           interface_reactor.call(:button, data)
         end
@@ -23,29 +24,41 @@ module ButtonDeployInterface
 
       attr_reader :state_previous, :state_current, :interface_reactors
 
+      def data_base
+        { step: step, access_granted: access_granted, finger_id: finger_id }
+      end
+
       def was_not_pressed?
         return true if state_previous.nil?
         
-        state_previous[key] == no_button_event
+        state_previous[buttons_state_key] == no_button_event
       end
 
       def no_longer_pressed?
-        state_current[key] == no_button_event
+        state_current[buttons_state_key] == no_button_event
       end
 
       def step
         state_current[ButtonDeployInterface::AwsIot::Constants::STEP_KEY]
       end
 
+      def access_granted
+        state_current[ButtonDeployInterface::AwsIot::Constants::ACCESS_GRANTED_KEY]
+      end
+
+      def finger_id
+        state_current[ButtonDeployInterface::AwsIot::Constants::FINGER_ID_KEY]
+      end
+
       def current_name
-        event_name_mapping[state_current[key]]
+        event_name_mapping[state_current[buttons_state_key]]
       end
 
       def previous_name
-        event_name_mapping[state_previous[key]]
+        event_name_mapping[state_previous[buttons_state_key]]
       end
 
-      def key
+      def buttons_state_key
         ButtonDeployInterface::AwsIot::Constants::BUTTONS_STATE_KEY
       end
 

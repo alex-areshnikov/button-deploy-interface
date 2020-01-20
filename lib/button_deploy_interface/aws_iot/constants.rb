@@ -7,7 +7,10 @@ module ButtonDeployInterface
       TIMEOUT_SEC = 5
 
       STEP_KEY = "step"
+      ACCESS_GRANTED_KEY = "access_granted"
+      FINGER_ID_KEY = "finger_id"
       BUTTONS_STATE_KEY = "button"
+      ENROLLED_KEY = "enrolled"
 
       BUTTON_NAMES = [
         BUTTON_UP = :up,
