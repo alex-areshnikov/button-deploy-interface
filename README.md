@@ -24,7 +24,43 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Here is a snippet that shows how to use button-deploy-interface gem
+
+```ruby
+# certificate and PK can be found at AWS IoT DeployButton thing
+certificate_path = "path/to/certificate.pem.crt"
+private_key_path = "path/to/private.pem.key"
+
+# Initialize interface instance
+client = ButtonDeployInterface::Client.new(certificate_path, private_key_path)
+
+# Perform setup
+client.setup
+
+# Define a reactor
+#
+# Every time an action happens at the device, the reactor will be executed.
+# type: type of action happened. Existing types: [:button, :fingerprint_enroll]
+# data: supporting data
+reactor = proc { |type, data| puts "Type: #{type} Data: #{data}"}
+
+# Register the reactor. It is possible to register multiple reactors
+client.register_device_action_reactor(reactor)
+
+# Below described interactions with the device
+
+# Set step. Available steps 0-14
+client.step(5)
+
+# Set erred step if something goes wrong
+client.step(7, error: true)
+
+# Enroll middle finger
+# Passed parameter is the finger id to enroll. Existing finger will be overrided.
+# After successfull enroll, the registered reactor(s) will be triggered with type :fingerprint_enroll and 
+# supporting data will contain enrolled finger id
+client.fingerprint_enroll(4)
+```
 
 ## Development
 
